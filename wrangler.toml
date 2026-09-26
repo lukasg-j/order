@@ -22,7 +22,7 @@ new_classes = ["OrderTracker", "DriverPresence"]
 [[d1_databases]]
 binding = "DB"
 database_name = "food-delivery-db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "28c89c74-1e94-406a-9234-f80cff4e80a6"
 
 # ---------------------------------------------------------------------------
 # KV (sessions, feature flags, stripe_mode toggle, cached menus)
