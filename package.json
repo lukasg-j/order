@@ -1,0 +1,23 @@
+{
+  "name": "food-delivery-api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:test-mode": "wrangler dev --var STRIPE_MODE_DEFAULT:test",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "db:migrate:local": "wrangler d1 execute food-delivery-db --local --file=./src/db/schema.sql",
+    "db:migrate:remote": "wrangler d1 execute food-delivery-db --remote --file=./src/db/schema.sql",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "stripe": "^16.12.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240925.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^3.78.0"
+  }
+}
