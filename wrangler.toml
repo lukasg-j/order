@@ -1,0 +1,76 @@
+name = "food-delivery-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ---------------------------------------------------------------------------
+# Durable Objects
+# ---------------------------------------------------------------------------
+[durable_objects]
+bindings = [
+  { name = "ORDER_TRACKER", class_name = "OrderTracker" },
+  { name = "DRIVER_PRESENCE", class_name = "DriverPresence" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["OrderTracker", "DriverPresence"]
+
+# ---------------------------------------------------------------------------
+# D1 (relational data) — replace database_id after `wrangler d1 create`
+# ---------------------------------------------------------------------------
+[[d1_databases]]
+binding = "DB"
+database_name = "food-delivery-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+# ---------------------------------------------------------------------------
+# KV (sessions, feature flags, stripe_mode toggle, cached menus)
+# ---------------------------------------------------------------------------
+[[kv_namespaces]]
+binding = "CONFIG_KV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# ---------------------------------------------------------------------------
+# R2 (photos: menu, ID docs, delivery proof) — SKIPPED FOR NOW.
+# Add this back once you build photo uploads:
+# [[r2_buckets]]
+# binding = "PHOTOS"
+# bucket_name = "food-delivery-photos"
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Queues (webhook processing, payout batching, notifications)
+# ---------------------------------------------------------------------------
+[[queues.producers]]
+binding = "WEBHOOK_QUEUE"
+queue = "stripe-webhook-events"
+
+[[queues.consumers]]
+queue = "stripe-webhook-events"
+max_batch_size = 10
+max_retries = 5
+dead_letter_queue = "stripe-webhook-dlq"
+
+# ---------------------------------------------------------------------------
+# Cron (payout reconciliation, stale-order cleanup)
+# ---------------------------------------------------------------------------
+[triggers]
+crons = ["*/15 * * * *", "0 3 * * *"]
+# */15 * * * *  -> stale-order cleanup
+# 0 3 * * *     -> nightly payout reconciliation
+
+# ---------------------------------------------------------------------------
+# Per-environment overrides — each needs its own D1/KV/R2 ids in practice
+# ---------------------------------------------------------------------------
+[env.staging]
+name = "food-delivery-api-staging"
+
+[env.production]
+name = "food-delivery-api-production"
+
+# Secrets (never in this file — set via `wrangler secret put <NAME> [--env production]`):
+#   STRIPE_SECRET_KEY_TEST / STRIPE_SECRET_KEY_LIVE
+#   STRIPE_PUBLISHABLE_KEY_TEST / STRIPE_PUBLISHABLE_KEY_LIVE
+#   STRIPE_WEBHOOK_SECRET_TEST / STRIPE_WEBHOOK_SECRET_LIVE
+#   JWT_SIGNING_SECRET
