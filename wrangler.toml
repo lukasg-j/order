@@ -29,7 +29,7 @@ database_id = "REPLACE_WITH_D1_DATABASE_ID"
 # ---------------------------------------------------------------------------
 [[kv_namespaces]]
 binding = "CONFIG_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "236ef92a92754d35a1ac852fb83d0395"
 
 # ---------------------------------------------------------------------------
 # R2 (photos: menu, ID docs, delivery proof) — SKIPPED FOR NOW.
